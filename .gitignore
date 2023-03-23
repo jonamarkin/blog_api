@@ -1,1 +1,28 @@
+#Ignore .env file
 .env
+
+#Ignore .idea folder
+.idea
+
+#Ignore .vscode folder
+.vscode
+
+#Ignore .DS_Store file
+.DS_Store
+
+#Ignore .gitignore file
+.gitignore
+
+#Ignore .gitattributes file
+.gitattributes
+
+#Ignore node_modules folder
+node_modules
+
+#Ignore package-lock.json file
+package-lock.json
+
+#Ignore yarn.lock file
+yarn.lock
+
+
