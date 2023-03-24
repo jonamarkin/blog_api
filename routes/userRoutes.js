@@ -1,95 +1,31 @@
 const express = require("express");
-
+//Import user controller
+const {
+  registerUser,
+  loginUser,
+  getAllUsers,
+  getSingleUser,
+  updateUser,
+  deleteUser,
+} = require("../controllers/users/userController");
 const userRouter = express.Router();
 
 //Register user endpoint
-userRouter.post("/register", async (req, res) => {
-  try {
-    // const { name, email, password } = req.body;
-    // const user = await User.create({
-    //   name,
-    //   email,
-    //   password,
-    // });
-
-    res.status(201).json({
-      responseCode: "00",
-      responseMessage: "User created successfully",
-    });
-  } catch (err) {
-    console.log(err);
-  }
-});
+userRouter.post("/register", registerUser);
 
 //Login user endpoint
-userRouter.post("/login", async (req, res) => {
-  try {
-    // const { email, password } = req.body;
-
-    //check if user exists
-
-    //check if password matches
-
-    //create token
-
-    //send token
-
-    res.status(200).json({
-      responseCode: "00",
-      responseMessage: "User logged in successfully",
-    });
-  } catch (err) {
-    console.log(err);
-  }
-});
+userRouter.post("/login", loginUser);
 
 //Get all users endpoint
-userRouter.get("/", async (req, res) => {
-  try {
-    //const users = await User.find();
-    res.status(200).json({
-      responseCode: "00",
-      responseMessage: "Users fetched successfully",
-    });
-  } catch (err) {
-    console.log(err);
-  }
-});
+userRouter.get("/", getAllUsers);
 
 //Get single user endpoint
-userRouter.get("/:id", async (req, res) => {
-  try {
-    res.status(200).json({
-      responseCode: "00",
-      responseMessage: "User fetched successfully",
-    });
-  } catch (err) {
-    console.log(err);
-  }
-});
+userRouter.get("/:id", getSingleUser);
 
 //Update user endpoint
-userRouter.put("/:id", async (req, res) => {
-  try {
-    res.status(200).json({
-      responseCode: "00",
-      responseMessage: "User updated successfully",
-    });
-  } catch (err) {
-    console.log(err);
-  }
-});
+userRouter.put("/:id", updateUser);
 
 //Delete user endpoint
-userRouter.delete("/:id", async (req, res) => {
-  try {
-    res.status(200).json({
-      responseCode: "00",
-      responseMessage: "User deleted successfully",
-    });
-  } catch (err) {
-    console.log(err);
-  }
-});
+userRouter.delete("/:id", deleteUser);
 
 module.exports = userRouter;
