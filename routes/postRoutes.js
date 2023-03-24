@@ -1,71 +1,29 @@
 const express = require("express");
+//Import post controller
+const {
+  createPost,
+  getAllPosts,
+  getSinglePost,
+  updatePost,
+  deletePost,
+} = require("../controllers/posts/postController");
 
 const postRouter = express.Router();
 
 //POST ROUTES
 //Create post endpoint
-postRouter.post("/create", async (req, res) => {
-  try {
-    //
-    res.status(201).json({
-      responseCode: "00",
-      responseMessage: "Post created successfully",
-    });
-  } catch (err) {
-    console.log(err);
-  }
-});
+postRouter.post("/create", createPost);
 
 //Get all posts endpoint
-postRouter.get("/", async (req, res) => {
-  try {
-    //
-    res.status(200).json({
-      responseCode: "00",
-      responseMessage: "Posts fetched successfully",
-    });
-  } catch (err) {
-    console.log(err);
-  }
-});
+postRouter.get("/", getAllPosts);
 
 //Get single post endpoint
-postRouter.get("/:id", async (req, res) => {
-  try {
-    //
-    res.status(200).json({
-      responseCode: "00",
-      responseMessage: "Post fetched successfully",
-    });
-  } catch (err) {
-    console.log(err);
-  }
-});
+postRouter.get("/:id", getSinglePost);
 
 //Update post endpoint
-postRouter.put("/:id", async (req, res) => {
-  try {
-    //
-    res.status(200).json({
-      responseCode: "00",
-      responseMessage: "Post updated successfully",
-    });
-  } catch (err) {
-    console.log(err);
-  }
-});
+postRouter.put("/:id", updatePost);
 
 //Delete post endpoint
-postRouter.delete("/:id", async (req, res) => {
-  try {
-    //
-    res.status(200).json({
-      responseCode: "00",
-      responseMessage: "Post deleted successfully",
-    });
-  } catch (err) {
-    console.log(err);
-  }
-});
+postRouter.delete("/:id", deletePost);
 
 module.exports = postRouter;
