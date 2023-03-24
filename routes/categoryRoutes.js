@@ -4,7 +4,7 @@ const categoryRouter = express.Router();
 
 //CATEGORY ROUTES
 //Create category endpoint
-categoryRouter.post("/api/v1/categories/create", async (req, res) => {
+categoryRouter.post("/create", async (req, res) => {
   try {
     //
     res.status(201).json({
@@ -17,7 +17,7 @@ categoryRouter.post("/api/v1/categories/create", async (req, res) => {
 });
 
 //Get all categories endpoint
-categoryRouter.get("/api/v1/categories", async (req, res) => {
+categoryRouter.get("/", async (req, res) => {
   try {
     //
     res.status(200).json({
@@ -30,7 +30,7 @@ categoryRouter.get("/api/v1/categories", async (req, res) => {
 });
 
 //Get single category endpoint
-categoryRouter.get("/api/v1/categories/:id", async (req, res) => {
+categoryRouter.get("/:id", async (req, res) => {
   try {
     //
     res.status(200).json({
@@ -43,7 +43,7 @@ categoryRouter.get("/api/v1/categories/:id", async (req, res) => {
 });
 
 //Update category endpoint
-categoryRouter.put("/api/v1/categories/:id", async (req, res) => {
+categoryRouter.put("/:id", async (req, res) => {
   try {
     //
     res.status(200).json({
@@ -56,7 +56,7 @@ categoryRouter.put("/api/v1/categories/:id", async (req, res) => {
 });
 
 //Delete category endpoint
-categoryRouter.delete("/api/v1/categories/:id", async (req, res) => {
+categoryRouter.delete("/:id", async (req, res) => {
   try {
     //
     res.status(200).json({

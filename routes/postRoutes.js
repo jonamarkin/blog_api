@@ -4,7 +4,7 @@ const postRouter = express.Router();
 
 //POST ROUTES
 //Create post endpoint
-postRouter.post("/api/v1/posts/create", async (req, res) => {
+postRouter.post("/create", async (req, res) => {
   try {
     //
     res.status(201).json({
@@ -17,7 +17,7 @@ postRouter.post("/api/v1/posts/create", async (req, res) => {
 });
 
 //Get all posts endpoint
-postRouter.get("/api/v1/posts", async (req, res) => {
+postRouter.get("/", async (req, res) => {
   try {
     //
     res.status(200).json({
@@ -30,7 +30,7 @@ postRouter.get("/api/v1/posts", async (req, res) => {
 });
 
 //Get single post endpoint
-postRouter.get("/api/v1/posts/:id", async (req, res) => {
+postRouter.get("/:id", async (req, res) => {
   try {
     //
     res.status(200).json({
@@ -43,7 +43,7 @@ postRouter.get("/api/v1/posts/:id", async (req, res) => {
 });
 
 //Update post endpoint
-postRouter.put("/api/v1/posts/:id", async (req, res) => {
+postRouter.put("/:id", async (req, res) => {
   try {
     //
     res.status(200).json({
@@ -56,7 +56,7 @@ postRouter.put("/api/v1/posts/:id", async (req, res) => {
 });
 
 //Delete post endpoint
-postRouter.delete("/api/v1/posts/:id", async (req, res) => {
+postRouter.delete("/:id", async (req, res) => {
   try {
     //
     res.status(200).json({
