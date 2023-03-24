@@ -3,7 +3,7 @@ const express = require("express");
 const userRouter = express.Router();
 
 //Register user endpoint
-userRouter.post("/api/v1/users/register", async (req, res) => {
+userRouter.post("/register", async (req, res) => {
   try {
     // const { name, email, password } = req.body;
     // const user = await User.create({
@@ -22,7 +22,7 @@ userRouter.post("/api/v1/users/register", async (req, res) => {
 });
 
 //Login user endpoint
-userRouter.post("/api/v1/users/login", async (req, res) => {
+userRouter.post("/login", async (req, res) => {
   try {
     // const { email, password } = req.body;
 
@@ -44,7 +44,7 @@ userRouter.post("/api/v1/users/login", async (req, res) => {
 });
 
 //Get all users endpoint
-userRouter.get("/api/v1/users", async (req, res) => {
+userRouter.get("/", async (req, res) => {
   try {
     //const users = await User.find();
     res.status(200).json({
@@ -57,7 +57,7 @@ userRouter.get("/api/v1/users", async (req, res) => {
 });
 
 //Get single user endpoint
-userRouter.get("/api/v1/users/:id", async (req, res) => {
+userRouter.get("/:id", async (req, res) => {
   try {
     res.status(200).json({
       responseCode: "00",
@@ -69,7 +69,7 @@ userRouter.get("/api/v1/users/:id", async (req, res) => {
 });
 
 //Update user endpoint
-userRouter.put("/api/v1/users/:id", async (req, res) => {
+userRouter.put("/:id", async (req, res) => {
   try {
     res.status(200).json({
       responseCode: "00",
@@ -81,7 +81,7 @@ userRouter.put("/api/v1/users/:id", async (req, res) => {
 });
 
 //Delete user endpoint
-userRouter.delete("/api/v1/users/:id", async (req, res) => {
+userRouter.delete("/:id", async (req, res) => {
   try {
     res.status(200).json({
       responseCode: "00",

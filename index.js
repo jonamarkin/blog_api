@@ -1,6 +1,7 @@
 const express = require("express");
 require("dotenv").config();
 require("./config/connectDB");
+const userRouter = require("./routes/userRoutes");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -10,6 +11,9 @@ app.listen(PORT, () => {
 
 //middleware
 //routes
+
+//User routes
+app.use("/api/v1/users", userRouter);
 
 //error handling
 app.use((err, req, res, next) => {
