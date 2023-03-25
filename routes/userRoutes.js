@@ -8,6 +8,7 @@ const {
   updateUser,
   deleteUser,
 } = require("../controllers/users/userController");
+const isLoggedIn = require("../middlewares/isLoggedIn");
 const userRouter = express.Router();
 
 //Register user endpoint
@@ -20,7 +21,7 @@ userRouter.post("/login", loginUser);
 userRouter.get("/", getAllUsers);
 
 //Get single user endpoint
-userRouter.get("/:id", getSingleUser);
+userRouter.get("/:id", isLoggedIn, getSingleUser);
 
 //Update user endpoint
 userRouter.put("/:id", updateUser);

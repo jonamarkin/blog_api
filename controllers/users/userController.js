@@ -3,6 +3,7 @@ const User = require("../../model/User/User");
 const bcrypt = require("bcryptjs");
 const generateToken = require("../../utils/generateToken");
 const getTokenFromHeader = require("../../utils/getTokenFromHeader");
+const jwt = require("jsonwebtoken");
 
 //Register a new user
 const registerUser = async (req, res) => {
@@ -97,13 +98,13 @@ const getAllUsers = async (req, res) => {
 const getSingleUser = async (req, res) => {
   const { id } = req.params;
   try {
-    //Get token from headers
-    const token = getTokenFromHeader(req);
-    //Verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log(decoded);
-    //Get user id from decoded token
-    const userId = decoded.id;
+    // //Get token from headers
+    // const token = getTokenFromHeader(req);
+    // //Verify token
+    // const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    // console.log(decoded);
+    // //Get user id from decoded token
+    // const userId = decoded.id;
 
     const user = await User.findById(id);
     if (!user) {

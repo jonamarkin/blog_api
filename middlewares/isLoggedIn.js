@@ -1,4 +1,5 @@
 const getTokenFromHeader = require("../utils/getTokenFromHeader");
+const jwt = require("jsonwebtoken");
 
 const isLoggedIn = (req, res, next) => {
   const token = getTokenFromHeader(req);
@@ -11,6 +12,7 @@ const isLoggedIn = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
+    console.log(req.user);
     next();
   } catch (err) {
     console.log(err);
@@ -20,3 +22,5 @@ const isLoggedIn = (req, res, next) => {
     });
   }
 };
+
+module.exports = isLoggedIn;
