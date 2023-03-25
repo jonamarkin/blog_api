@@ -1,6 +1,8 @@
 //Require the User model
 const User = require("../../model/User/User");
 const bcrypt = require("bcryptjs");
+const generateToken = require("../../utils/generateToken");
+const getTokenFromHeader = require("../../utils/getTokenFromHeader");
 
 //Register a new user
 const registerUser = async (req, res) => {
@@ -65,7 +67,13 @@ const loginUser = async (req, res) => {
     res.status(200).json({
       responseCode: "00",
       responseMessage: "User logged in successfully",
-      responseData: userExists,
+      responseData: {
+        firstName: userExists.firstName,
+        lastName: userExists.lastName,
+        email: userExists.email,
+        avatar: userExists.avatar,
+        token: generateToken(userExists._id),
+      },
     });
   } catch (err) {
     console.log(err);
@@ -89,6 +97,14 @@ const getAllUsers = async (req, res) => {
 const getSingleUser = async (req, res) => {
   const { id } = req.params;
   try {
+    //Get token from headers
+    const token = getTokenFromHeader(req);
+    //Verify token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log(decoded);
+    //Get user id from decoded token
+    const userId = decoded.id;
+
     const user = await User.findById(id);
     if (!user) {
       return res.status(400).json({
