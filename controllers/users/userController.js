@@ -1,18 +1,32 @@
-const User = require("../../models/User");
+//Require the User model
+const User = require("../../model/User/User");
 
 //Register a new user
 const registerUser = async (req, res) => {
+  const { firstName, lastName, email, password, avatar } = req.body;
   try {
-    // const { name, email, password } = req.body;
-    // const user = await User.create({
-    //   name,
-    //   email,
-    //   password,
-    // });
+    //Check if user exists
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+      return res.status(400).json({
+        responseCode: "01",
+        responseMessage: "User already exists",
+      });
+    }
+
+    //If no user exists, create a new user
+    const user = await User.create({
+      firstName,
+      lastName,
+      email,
+      password,
+      avatar,
+    });
 
     res.status(201).json({
       responseCode: "00",
-      responseMessage: "User created successfully",
+      responseMessage: "User registered successfully",
+      responseData: user,
     });
   } catch (err) {
     console.log(err);
@@ -21,16 +35,24 @@ const registerUser = async (req, res) => {
 
 //Login a user
 const loginUser = async (req, res) => {
+  const { email, password } = req.body;
   try {
-    // const { email, password } = req.body;
-
-    //check if user exists
-
-    //check if password matches
-
-    //create token
-
-    //send token
+    //TODO: Check if email exists
+    const userExists = await User.findOne({ email });
+    if (!userExists) {
+      return res.status(400).json({
+        responseCode: "01",
+        responseMessage: "User does not exist",
+      });
+    }
+    //TODO: Check if password is correct
+    const isPasswordCorrect = await userExists.comparePassword(password);
+    if (!isPasswordCorrect) {
+      return res.status(400).json({
+        responseCode: "01",
+        responseMessage: "Password is incorrect",
+      });
+    }
 
     res.status(200).json({
       responseCode: "00",
