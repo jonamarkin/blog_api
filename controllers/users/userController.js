@@ -51,7 +51,10 @@ const loginUser = async (req, res) => {
       });
     }
     // Check if password is correct
-    const isPasswordCorrect = await User.findOne({ password });
+    const isPasswordCorrect = await bcrypt.compare(
+      password,
+      userExists.password
+    );
     if (!isPasswordCorrect) {
       return res.status(400).json({
         responseCode: "01",
@@ -62,6 +65,7 @@ const loginUser = async (req, res) => {
     res.status(200).json({
       responseCode: "00",
       responseMessage: "User logged in successfully",
+      responseData: userExists,
     });
   } catch (err) {
     console.log(err);
@@ -83,10 +87,19 @@ const getAllUsers = async (req, res) => {
 
 //Get single user
 const getSingleUser = async (req, res) => {
+  const { id } = req.params;
   try {
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(400).json({
+        responseCode: "01",
+        responseMessage: "User does not exist",
+      });
+    }
     res.status(200).json({
       responseCode: "00",
       responseMessage: "User fetched successfully",
+      responseData: user,
     });
   } catch (err) {
     console.log(err);
