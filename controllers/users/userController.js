@@ -1,5 +1,6 @@
 //Require the User model
 const User = require("../../model/User/User");
+const bcrypt = require("bcryptjs");
 
 //Register a new user
 const registerUser = async (req, res) => {
@@ -14,12 +15,16 @@ const registerUser = async (req, res) => {
       });
     }
 
+    //Hash password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
     //If no user exists, create a new user
     const user = await User.create({
       firstName,
       lastName,
       email,
-      password,
+      password: hashedPassword,
       avatar,
     });
 
@@ -37,7 +42,7 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
   try {
-    //TODO: Check if email exists
+    //Check if email exists
     const userExists = await User.findOne({ email });
     if (!userExists) {
       return res.status(400).json({
@@ -45,8 +50,8 @@ const loginUser = async (req, res) => {
         responseMessage: "User does not exist",
       });
     }
-    //TODO: Check if password is correct
-    const isPasswordCorrect = await userExists.comparePassword(password);
+    // Check if password is correct
+    const isPasswordCorrect = await User.findOne({ password });
     if (!isPasswordCorrect) {
       return res.status(400).json({
         responseCode: "01",
