@@ -1,14 +1,12 @@
 const getTokenFromHeader = require("../utils/getTokenFromHeader");
 const jwt = require("jsonwebtoken");
 const verifyToken = require("../utils/verifyToken");
+const appError = require("../utils/appError");
 
 const isLoggedIn = (req, res, next) => {
   const token = getTokenFromHeader(req);
   if (!token) {
-    return res.status(401).json({
-      responseCode: "01",
-      responseMessage: "Unauthorized",
-    });
+    next(appError("Unauthorized", 401));
   }
   try {
     const decodedUser = verifyToken(token);
@@ -19,10 +17,7 @@ const isLoggedIn = (req, res, next) => {
     next();
   } catch (err) {
     console.log(err);
-    return res.status(401).json({
-      responseCode: "01",
-      responseMessage: "Unauthorized",
-    });
+    next(appError("Unauthorized", 401));
   }
 };
 

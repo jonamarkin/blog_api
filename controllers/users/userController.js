@@ -46,10 +46,7 @@ const loginUser = async (req, res) => {
     //Check if email exists
     const userExists = await User.findOne({ email });
     if (!userExists) {
-      return res.status(400).json({
-        responseCode: "01",
-        responseMessage: "User does not exist",
-      });
+      next(appError("User does not exist", 400));
     }
     // Check if password is correct
     const isPasswordCorrect = await bcrypt.compare(
@@ -57,10 +54,7 @@ const loginUser = async (req, res) => {
       userExists.password
     );
     if (!isPasswordCorrect) {
-      return res.status(400).json({
-        responseCode: "01",
-        responseMessage: "Password is incorrect",
-      });
+      next(appError("Password is incorrect", 400));
     }
 
     res.status(200).json({
@@ -101,10 +95,7 @@ const getSingleUser = async (req, res) => {
   try {
     const user = await User.findById(loggedInUser);
     if (!user) {
-      return res.status(400).json({
-        responseCode: "01",
-        responseMessage: "User does not exist",
-      });
+      next(appError("User does not exist", 400));
     }
     res.status(200).json({
       responseCode: "00",
