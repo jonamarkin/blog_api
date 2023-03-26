@@ -9,6 +9,9 @@ const {
   updateUser,
   deleteUser,
   avatarUpload,
+  profileViewedBy,
+  followUser,
+  unfollowUser,
 } = require("../controllers/users/userController");
 const isLoggedIn = require("../middlewares/isLoggedIn");
 const userRouter = express.Router();
@@ -33,5 +36,14 @@ userRouter.delete("/:id", deleteUser);
 
 //Avatar upload endpoint
 userRouter.post("/avatar", isLoggedIn, upload.single("avatar"), avatarUpload);
+
+//Profile viewed by
+userRouter.get("/profile/:id", isLoggedIn, profileViewedBy);
+
+//Follow user
+userRouter.post("/follow/:id", isLoggedIn, followUser);
+
+//Unfollow user
+userRouter.post("/unfollow/:id", isLoggedIn, unfollowUser);
 
 module.exports = userRouter;

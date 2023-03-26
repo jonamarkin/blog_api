@@ -119,7 +119,7 @@ const updateUser = async (req, res) => {
 };
 
 //Avatar upload
-const avatarUpload = async (req, res) => {
+const avatarUpload = async (req, res, next) => {
   console.log(req.file);
   try {
     //Check if user exists
@@ -176,6 +176,149 @@ const deleteUser = async (req, res) => {
   }
 };
 
+//Profile vieweers
+const profileViewedBy = async (req, res, next) => {
+  try {
+    //Check if user exists
+    const userExists = await User.findById(req.params.id);
+    if (!userExists) {
+      next(appError("User does not exist", 400));
+    }
+
+    //Get the user that is logged in
+    const loggedInUser = await User.findById(req.userId);
+
+    //check if the two users are the same
+    if (userExists._id.toString() === loggedInUser._id.toString()) {
+      //Don't add the user to the profile viewers
+      return res.status(200).json({
+        responseCode: "00",
+        responseMessage: "You are viewing your own profile",
+      });
+    } else {
+      //Check if user has viewed the profile before
+      const hasViewed = userExists.viewers.find(
+        (user) => user.toString() === loggedInUser._id.toString()
+      );
+
+      //If user has not viewed the profile before, add the user to the profile viewers
+      if (!hasViewed) {
+        //Add user to profile viewers
+        userExists.viewers.push(loggedInUser._id);
+        await userExists.save();
+
+        res.status(200).json({
+          responseCode: "00",
+          responseMessage: "You have viewed this profile",
+        });
+      } else {
+        res.status(200).json({
+          responseCode: "00",
+          responseMessage: "You have already viewed this profile",
+        });
+      }
+    }
+  } catch (err) {
+    next(appError(err.message, 500) || new Error(err));
+  }
+};
+
+//Follow user
+const followUser = async (req, res, next) => {
+  try {
+    //Check if user exists
+    const userExists = await User.findById(req.params.id);
+    if (!userExists) {
+      next(appError("User does not exist", 400));
+    }
+
+    //Get the user that is logged in
+    const loggedInUser = await User.findById(req.userId);
+
+    //check if the two users are the same
+    if (userExists._id.toString() === loggedInUser._id.toString()) {
+      //You cannot follow yourself
+      return res.status(400).json({
+        responseCode: "01",
+        responseMessage: "You cannot follow yourself",
+      });
+    } else {
+      //Check if user has followed the user before
+      const hasFollowed = userExists.followers.find(
+        (user) => user.toString() === loggedInUser._id.toString()
+      );
+
+      //If user has not followed the user before, add the user to the followers
+      if (!hasFollowed) {
+        //Add user to followers
+        userExists.followers.push(loggedInUser._id);
+        await userExists.save();
+
+        res.status(200).json({
+          responseCode: "00",
+          responseMessage: "You have followed this user",
+        });
+      } else {
+        res.status(200).json({
+          responseCode: "01",
+          responseMessage: "You have already followed this user",
+        });
+      }
+    }
+  } catch (err) {
+    next(appError(err.message, 500) || new Error(err));
+  }
+};
+
+//Unfollow user
+const unfollowUser = async (req, res, next) => {
+  try {
+    //Check if user exists
+    const userExists = await User.findById(req.params.id);
+    if (!userExists) {
+      next(appError("User does not exist", 400));
+    }
+
+    //Get the user that is logged in
+    const loggedInUser = await User.findById(req.userId);
+
+    //check if the two users are the same
+    if (userExists._id.toString() === loggedInUser._id.toString()) {
+      //You cannot follow yourself
+      return res.status(400).json({
+        responseCode: "01",
+        responseMessage: "You cannot unfollow yourself",
+      });
+    } else {
+      //Check if user has followed the user before
+      const hasFollowed = userExists.followers.find(
+        (user) => user.toString() === loggedInUser._id.toString()
+      );
+
+      //If user has followed the user before, remove the user from the followers
+      if (hasFollowed) {
+        //Remove user from followers
+        userExists.followers = userExists.followers.filter(
+          (user) => user.toString() !== loggedInUser._id.toString()
+        );
+        await userExists.save();
+
+        res.status(200).json({
+          responseCode: "00",
+          responseMessage: "You have unfollowed this user",
+        });
+      } else {
+        res.status(200).json({
+          responseCode: "01",
+          responseMessage: "You have not followed this user",
+        });
+      }
+    }
+  } catch (err) {
+    next(appError(err.message, 500) || new Error(err));
+  }
+};
+
 //Exporting the registerUser function
 module.exports = {
   registerUser,
@@ -185,4 +328,7 @@ module.exports = {
   updateUser,
   deleteUser,
   avatarUpload,
+  profileViewedBy,
+  followUser,
+  unfollowUser,
 };
