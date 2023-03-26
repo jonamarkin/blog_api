@@ -254,6 +254,10 @@ const followUser = async (req, res, next) => {
         userExists.followers.push(loggedInUser._id);
         await userExists.save();
 
+        //Add user to following
+        loggedInUser.following.push(userExists._id);
+        await loggedInUser.save();
+
         res.status(200).json({
           responseCode: "00",
           responseMessage: "You have followed this user",
@@ -302,6 +306,12 @@ const unfollowUser = async (req, res, next) => {
           (user) => user.toString() !== loggedInUser._id.toString()
         );
         await userExists.save();
+
+        //Remove user from following
+        loggedInUser.following = loggedInUser.following.filter(
+          (user) => user.toString() !== userExists._id.toString()
+        );
+        await loggedInUser.save();
 
         res.status(200).json({
           responseCode: "00",
