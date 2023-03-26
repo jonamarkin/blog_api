@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const generateToken = require("../../utils/generateToken");
 const getTokenFromHeader = require("../../utils/getTokenFromHeader");
 const jwt = require("jsonwebtoken");
+const appError = require("../../utils/appError");
 
 //Register a new user
 const registerUser = async (req, res, next) => {
@@ -12,12 +13,7 @@ const registerUser = async (req, res, next) => {
     //Check if user exists
     const userExists = await User.findOne({ email });
     if (userExists) {
-      // return res.status(400).json({
-      //   responseCode: "01",
-      //   responseMessage: "User already exists",
-      // });
-
-      next(new Error("User already exists"));
+      next(appError("User already exists", 400));
     }
 
     //Hash password
