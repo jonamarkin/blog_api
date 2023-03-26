@@ -27,3 +27,11 @@ app.use("/api/v1/categories", categoryRouter);
 
 //error handling
 app.use(globalErrorHandler);
+
+//404 error
+app.use("*", (req, res) => {
+  res.status(404).json({
+    responseCode: "99",
+    responseMessage: `${req.originalUrl} not found`,
+  });
+});
