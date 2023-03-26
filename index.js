@@ -6,6 +6,7 @@ const userRouter = require("./routes/userRoutes");
 const postRouter = require("./routes/postRoutes");
 const commentRouter = require("./routes/commentRoutes");
 const categoryRouter = require("./routes/categoryRoutes");
+const globalErrorHandler = require("./middlewares/globalErrorHandler");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -25,9 +26,4 @@ app.use("/api/v1/comments", commentRouter);
 app.use("/api/v1/categories", categoryRouter);
 
 //error handling
-app.use((err, req, res, next) => {
-  res.status(500).json({
-    responseCode: "99",
-    responseMessage: "Internal server error",
-  });
-});
+app.use(globalErrorHandler);

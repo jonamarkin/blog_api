@@ -6,16 +6,18 @@ const getTokenFromHeader = require("../../utils/getTokenFromHeader");
 const jwt = require("jsonwebtoken");
 
 //Register a new user
-const registerUser = async (req, res) => {
+const registerUser = async (req, res, next) => {
   const { firstName, lastName, email, password, avatar } = req.body;
   try {
     //Check if user exists
     const userExists = await User.findOne({ email });
     if (userExists) {
-      return res.status(400).json({
-        responseCode: "01",
-        responseMessage: "User already exists",
-      });
+      // return res.status(400).json({
+      //   responseCode: "01",
+      //   responseMessage: "User already exists",
+      // });
+
+      next(new Error("User already exists"));
     }
 
     //Hash password
@@ -37,7 +39,7 @@ const registerUser = async (req, res) => {
       responseData: user,
     });
   } catch (err) {
-    console.log(err);
+    next(new Error(err));
   }
 };
 
@@ -77,7 +79,8 @@ const loginUser = async (req, res) => {
       },
     });
   } catch (err) {
-    console.log(err);
+    //console.log(err.statusCode);
+    console.log(new Error(err));
   }
 };
 
@@ -98,7 +101,7 @@ const getAllUsers = async (req, res) => {
 const getSingleUser = async (req, res) => {
   //const { id } = req.params;
   const loggedInUser = req.userId;
-  console.log(loggedInUser);
+  //console.log(loggedInUser);
   try {
     const user = await User.findById(loggedInUser);
     if (!user) {
