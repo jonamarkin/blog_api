@@ -1,26 +1,27 @@
 const mongoose = require("mongoose");
 
 //Create schema
-const userSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema(
+  {
     firstName: {
-        type: String,
-        required: [true, "firstName is required"],
+      type: String,
+      required: [true, "firstName is required"],
     },
     lastName: {
-        type: String,
-        required: [true, "lastName is required"],
+      type: String,
+      required: [true, "lastName is required"],
     },
     email: {
-        type: String,
-        required: [true, "email is required"],
-        unique: [true, "email already exists"],
+      type: String,
+      required: [true, "email is required"],
+      unique: [true, "email already exists"],
     },
     password: {
-        type: String,
-        required: [true, "password is required"],
+      type: String,
+      required: [true, "password is required"],
     },
     avatar: {
-        type: String,
+      type: String,
     },
 
     // postCount: {
@@ -28,56 +29,67 @@ const userSchema = new mongoose.Schema({
     //   default: 0,
     // },
     isBlocked: {
-        type: Boolean,
-        default: false,
+      type: Boolean,
+      default: false,
     },
     isAdmin: {
-        type: Boolean,
-        default: false,
+      type: Boolean,
+      default: false,
     },
     role: {
-        type: String,
-        enum: ["admin", "guest", "editor"],
+      type: String,
+      enum: ["admin", "guest", "editor"],
     },
 
-    viewers: [{
+    viewers: [
+      {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-    }, ],
+      },
+    ],
 
-    followers: [{
+    followers: [
+      {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-    }, ],
+      },
+    ],
 
-    following: [{
+    following: [
+      {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-    }, ],
+      },
+    ],
     // active: { type: Boolean, default: false },
-    posts: [{
+    posts: [
+      {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Post",
-    }, ],
-    blockedUsers: [{
+      },
+    ],
+    blockedUsers: [
+      {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-    }, ],
+      },
+    ],
     plan: {
-        type: String,
-        enum: ["free", "premium"., "vip"],
-        default: "free",
+      type: String,
+      enum: ["free", "premium", "vip"],
+      default: "free",
     },
 
     userBadge: {
-        type: String,
-        enum: ["newbie", "expert", "master", "legend"],
-        default: "newbie",
+      type: String,
+      enum: ["newbie", "expert", "master", "legend"],
+      default: "newbie",
     },
-
-}, {
+  },
+  {
     timestamps: true,
-});
+  }
+);
 
 //Create model
 const User = mongoose.model("User", userSchema);
