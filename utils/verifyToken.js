@@ -1,22 +1,15 @@
 const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
-const verifyToken = (req, res, next) => {
-  const token = req.headers["x-access-token"];
-  if (!token) {
-    return res.status(403).send({
-      responseCode: "01",
-      responseMessage: "No token provided!",
-    });
-  }
-  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+const verifyToken = (token) => {
+  return jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
-      return res.status(401).send({
+      return res.status(401).json({
         responseCode: "01",
-        responseMessage: "Unauthorized!",
+        responseMessage: "Unauthorized",
       });
     }
-    req.userId = decoded.id;
-    next();
+    return decoded;
   });
 };
 

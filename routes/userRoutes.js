@@ -21,7 +21,7 @@ userRouter.post("/login", loginUser);
 userRouter.get("/", getAllUsers);
 
 //Get single user endpoint
-userRouter.get("/:id", isLoggedIn, getSingleUser);
+userRouter.get("/profile", isLoggedIn, getSingleUser);
 
 //Update user endpoint
 userRouter.put("/:id", updateUser);

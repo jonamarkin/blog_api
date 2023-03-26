@@ -96,17 +96,11 @@ const getAllUsers = async (req, res) => {
 
 //Get single user
 const getSingleUser = async (req, res) => {
-  const { id } = req.params;
+  //const { id } = req.params;
+  const loggedInUser = req.userId;
+  console.log(loggedInUser);
   try {
-    // //Get token from headers
-    // const token = getTokenFromHeader(req);
-    // //Verify token
-    // const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    // console.log(decoded);
-    // //Get user id from decoded token
-    // const userId = decoded.id;
-
-    const user = await User.findById(id);
+    const user = await User.findById(loggedInUser);
     if (!user) {
       return res.status(400).json({
         responseCode: "01",
