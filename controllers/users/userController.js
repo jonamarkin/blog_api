@@ -89,9 +89,7 @@ const getAllUsers = async (req, res) => {
 
 //Get single user
 const getSingleUser = async (req, res) => {
-  //const { id } = req.params;
   const loggedInUser = req.userId;
-  //console.log(loggedInUser);
   try {
     const user = await User.findById(loggedInUser);
     if (!user) {

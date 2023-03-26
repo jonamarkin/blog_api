@@ -10,10 +10,12 @@ const isLoggedIn = (req, res, next) => {
   }
   try {
     const decodedUser = verifyToken(token);
-    // console.log(decodedUser);
-    // console.log(decodedUser.id);
+    //Check if decodedUser is an error
+    if (decodedUser instanceof Error) {
+      next(appError("Unauthorized", 401));
+    }
+
     req.userId = decodedUser.id;
-    // console.log(req.userId);
     next();
   } catch (err) {
     console.log(err);
