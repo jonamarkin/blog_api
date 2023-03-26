@@ -5,6 +5,7 @@ const generateToken = require("../../utils/generateToken");
 const getTokenFromHeader = require("../../utils/getTokenFromHeader");
 const jwt = require("jsonwebtoken");
 const appError = require("../../utils/appError");
+const upload = require("../../config/cloudinary");
 
 //Register a new user
 const registerUser = async (req, res, next) => {
@@ -119,13 +120,47 @@ const updateUser = async (req, res) => {
 
 //Avatar upload
 const avatarUpload = async (req, res) => {
+  console.log(req.file);
   try {
+    //Check if user exists
+    const userExists = await User.findById(req.userId);
+    if (!userExists) {
+      next(appError("User does not exist", 400));
+    }
+
+    //Check if user is blocked
+    if (userExists.isBlocked) {
+      next(appError("User is blocked", 400));
+    }
+
+    //Upload avatar
+    //Check if there is a file
+    if (!req.file) {
+      next(appError("Please upload an image", 400));
+    }
+
+    //Check if file is an image
+    if (!req.file.mimetype.startsWith("image")) {
+      next(appError("Please upload an image", 400));
+    }
+
+    //Find user by id and update avatar
+    await User.findByIdAndUpdate(
+      req.userId,
+      {
+        $set: { avatar: req.file.path },
+      },
+      {
+        new: true,
+      }
+    );
+
     res.status(200).json({
       responseCode: "00",
       responseMessage: "Avatar uploaded successfully",
     });
   } catch (err) {
-    console.log(err);
+    next(appError(err.message, 500) || new Error(err));
   }
 };
 

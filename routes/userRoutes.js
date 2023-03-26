@@ -1,4 +1,5 @@
 const express = require("express");
+const upload = require("../config/cloudinary");
 //Import user controller
 const {
   registerUser,
@@ -31,6 +32,6 @@ userRouter.put("/:id", updateUser);
 userRouter.delete("/:id", deleteUser);
 
 //Avatar upload endpoint
-userRouter.post("/avatar", avatarUpload);
+userRouter.post("/avatar", isLoggedIn, upload.single("avatar"), avatarUpload);
 
 module.exports = userRouter;
