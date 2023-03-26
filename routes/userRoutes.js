@@ -7,6 +7,7 @@ const {
   getSingleUser,
   updateUser,
   deleteUser,
+  avatarUpload,
 } = require("../controllers/users/userController");
 const isLoggedIn = require("../middlewares/isLoggedIn");
 const userRouter = express.Router();
@@ -28,5 +29,8 @@ userRouter.put("/:id", updateUser);
 
 //Delete user endpoint
 userRouter.delete("/:id", deleteUser);
+
+//Avatar upload endpoint
+userRouter.post("/avatar", avatarUpload);
 
 module.exports = userRouter;

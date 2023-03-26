@@ -117,6 +117,18 @@ const updateUser = async (req, res) => {
   }
 };
 
+//Avatar upload
+const avatarUpload = async (req, res) => {
+  try {
+    res.status(200).json({
+      responseCode: "00",
+      responseMessage: "Avatar uploaded successfully",
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 //Delete user
 const deleteUser = async (req, res) => {
   try {
@@ -137,4 +149,5 @@ module.exports = {
   getSingleUser,
   updateUser,
   deleteUser,
+  avatarUpload,
 };
