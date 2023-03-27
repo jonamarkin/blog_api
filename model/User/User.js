@@ -97,6 +97,11 @@ userSchema.virtual("fullName").get(function () {
   return `${this.firstName} ${this.lastName}`;
 });
 
+//Initials
+userSchema.virtual("initials").get(function () {
+  return `${this.firstName[0]}${this.lastName[0]}`;
+});
+
 //Create model
 const User = mongoose.model("User", userSchema);
 
