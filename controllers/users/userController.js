@@ -332,10 +332,9 @@ const unfollowUser = async (req, res, next) => {
 //Block user
 const blockUser = async (req, res, next) => {
   try {
-    //Check if user exists
-    const userExists = await User.findById(req.params.id);
-
-    if (!userExists) {
+    //Check if user to be blocked exists
+    const userToBeBlocked = await User.findById(req.params.id);
+    if (!userToBeBlocked) {
       next(appError("User does not exist", 400));
     }
 
@@ -343,40 +342,41 @@ const blockUser = async (req, res, next) => {
     const loggedInUser = await User.findById(req.userId);
 
     //check if the two users are the same
-    if (userExists._id.toString() === loggedInUser._id.toString()) {
+    if (userToBeBlocked._id.toString() === loggedInUser._id.toString()) {
       //You cannot block yourself
       return res.status(400).json({
         responseCode: "01",
         responseMessage: "You cannot block yourself",
       });
     } else {
-      //Check if user has blocked the user before
-      const hasBlocked = userExists.blockedUsers.find(
-        (user) => user.toString() === loggedInUser._id.toString()
+      //Check if logged in user has blocked the user before before
+      const hasBlocked = loggedInUser.blockedUsers.find(
+        (user) => user.toString() === userToBeBlocked._id.toString()
       );
 
-      //If user has not blocked the user before, add the user to the blocked
+      //If user has not blocked the user before, add the user to the blocked users
       if (!hasBlocked) {
-        //Add user to blocked
-        userExists.blocked.push(loggedInUser._id);
-        await userExists.save();
-
-        //Add user to blockedBy
-        loggedInUser.blockedBy.push(userExists._id);
+        //Add user to blocked users
+        loggedInUser.blockedUsers.push(userToBeBlocked._id);
         await loggedInUser.save();
+
+        res.status(200).json({
+          responseCode: "00",
+          responseMessage: "User blocked successfully",
+        });
       } else {
-        //You have already blocked this user
-        return res.status(200).json({
-          responseCode: "01",
-          responseMessage: "You have already blocked this user",
+        //Remove user from blocked users
+        loggedInUser.blockedUsers = loggedInUser.blockedUsers.filter(
+          (user) => user.toString() !== userToBeBlocked._id.toString()
+        );
+        await loggedInUser.save();
+
+        res.status(200).json({
+          responseCode: "00",
+          responseMessage: "User unblocked successfully",
         });
       }
     }
-
-    res.status(200).json({
-      responseCode: "00",
-      responseMessage: "User blocked successfully",
-    });
   } catch (err) {
     appError(err.message, 500);
   }
