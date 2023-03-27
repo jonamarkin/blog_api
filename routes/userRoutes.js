@@ -12,6 +12,7 @@ const {
   profileViewedBy,
   followUser,
   unfollowUser,
+  blockUser,
 } = require("../controllers/users/userController");
 const isLoggedIn = require("../middlewares/isLoggedIn");
 const userRouter = express.Router();
@@ -45,5 +46,8 @@ userRouter.post("/follow/:id", isLoggedIn, followUser);
 
 //Unfollow user
 userRouter.post("/unfollow/:id", isLoggedIn, unfollowUser);
+
+//Block user
+userRouter.post("/block/:id", isLoggedIn, blockUser);
 
 module.exports = userRouter;

@@ -329,6 +329,59 @@ const unfollowUser = async (req, res, next) => {
   }
 };
 
+//Block user
+const blockUser = async (req, res, next) => {
+  try {
+    //Check if user exists
+    const userExists = await User.findById(req.params.id);
+
+    if (!userExists) {
+      next(appError("User does not exist", 400));
+    }
+
+    //Get the user that is logged in
+    const loggedInUser = await User.findById(req.userId);
+
+    //check if the two users are the same
+    if (userExists._id.toString() === loggedInUser._id.toString()) {
+      //You cannot block yourself
+      return res.status(400).json({
+        responseCode: "01",
+        responseMessage: "You cannot block yourself",
+      });
+    } else {
+      //Check if user has blocked the user before
+      const hasBlocked = userExists.blockedUsers.find(
+        (user) => user.toString() === loggedInUser._id.toString()
+      );
+
+      //If user has not blocked the user before, add the user to the blocked
+      if (!hasBlocked) {
+        //Add user to blocked
+        userExists.blocked.push(loggedInUser._id);
+        await userExists.save();
+
+        //Add user to blockedBy
+        loggedInUser.blockedBy.push(userExists._id);
+        await loggedInUser.save();
+      } else {
+        //You have already blocked this user
+        return res.status(200).json({
+          responseCode: "01",
+          responseMessage: "You have already blocked this user",
+        });
+      }
+    }
+
+    res.status(200).json({
+      responseCode: "00",
+      responseMessage: "User blocked successfully",
+    });
+  } catch (err) {
+    appError(err.message, 500);
+  }
+};
+
 //Exporting the registerUser function
 module.exports = {
   registerUser,
@@ -341,4 +394,5 @@ module.exports = {
   profileViewedBy,
   followUser,
   unfollowUser,
+  blockUser,
 };
