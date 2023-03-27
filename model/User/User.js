@@ -102,6 +102,11 @@ userSchema.virtual("initials").get(function () {
   return `${this.firstName[0]}${this.lastName[0]}`;
 });
 
+//Posts count
+userSchema.virtual("postsCount").get(function () {
+  return this.posts.length;
+});
+
 //Create model
 const User = mongoose.model("User", userSchema);
 
