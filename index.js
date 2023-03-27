@@ -7,6 +7,7 @@ const postRouter = require("./routes/postRoutes");
 const commentRouter = require("./routes/commentRoutes");
 const categoryRouter = require("./routes/categoryRoutes");
 const globalErrorHandler = require("./middlewares/globalErrorHandler");
+const isAdmin = require("./middlewares/isAdmin");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -15,6 +16,8 @@ app.listen(PORT, () => {
 });
 
 app.use(express.json());
+
+app.use(isAdmin);
 
 //middleware
 //routes
