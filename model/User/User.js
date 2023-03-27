@@ -122,6 +122,11 @@ userSchema.virtual("blockedUsersCount").get(function () {
   return this.blockedUsers.length;
 });
 
+//Viewers count
+userSchema.virtual("viewersCount").get(function () {
+  return this.viewers.length;
+});
+
 //Create model
 const User = mongoose.model("User", userSchema);
 
