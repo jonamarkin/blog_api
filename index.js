@@ -17,7 +17,7 @@ app.listen(PORT, () => {
 
 app.use(express.json());
 
-app.use(isAdmin);
+// app.use(isAdmin);
 
 //middleware
 //routes

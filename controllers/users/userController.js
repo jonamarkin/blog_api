@@ -78,10 +78,16 @@ const loginUser = async (req, res) => {
 //Get all users
 const getAllUsers = async (req, res) => {
   try {
-    //const users = await User.find();
+    //Get all users
+    const users = await User.find();
+    if (!users) {
+      next(appError("No users found", 400));
+    }
+
     res.status(200).json({
       responseCode: "00",
       responseMessage: "Users fetched successfully",
+      responseData: users,
     });
   } catch (err) {
     console.log(err);
