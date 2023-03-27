@@ -360,6 +360,12 @@ const blockUser = async (req, res, next) => {
         loggedInUser.blockedUsers.push(userToBeBlocked._id);
         await loggedInUser.save();
 
+        //If logged in user is admin, set isBlocked to true
+        if (loggedInUser.role === "admin") {
+          userToBeBlocked.isBlocked = true;
+          await userToBeBlocked.save();
+        }
+
         res.status(200).json({
           responseCode: "00",
           responseMessage: "User blocked successfully",
@@ -371,6 +377,12 @@ const blockUser = async (req, res, next) => {
         );
         await loggedInUser.save();
 
+        //If logged in user is admin, set isBlocked to false
+        if (loggedInUser.role === "admin") {
+          userToBeBlocked.isBlocked = false;
+          await userToBeBlocked.save();
+        }
+
         res.status(200).json({
           responseCode: "00",
           responseMessage: "User unblocked successfully",
@@ -381,6 +393,8 @@ const blockUser = async (req, res, next) => {
     appError(err.message, 500);
   }
 };
+
+//Admin block user
 
 //Exporting the registerUser function
 module.exports = {
