@@ -5,7 +5,7 @@ const Post = require("../../model/Post/Post");
 const User = require("../../model/User/User");
 //Create post
 const createPost = async(req, res, next) => {
-    const { title, description, user } = req.body;
+    const { title, description } = req.body;
     try {
         //Check if logged in user exists
         const userExists = await User.findById(req.userId);
