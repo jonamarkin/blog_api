@@ -1,63 +1,50 @@
 const mongoose = require("mongoose");
 
 //Create schema
-const postSchema = new mongoose.Schema(
-  {
+const postSchema = new mongoose.Schema({
     title: {
-      type: String,
-      required: [true, "title is required"],
-      trim: true,
+        type: String,
+        required: [true, "title is required"],
+        trim: true,
     },
     description: {
-      type: String,
-      required: [true, "description is required"],
+        type: String,
+        required: [true, "description is required"],
     },
-    category: [
-      {
+    category: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Category",
-        required: [true, "category is required"],
-      },
-    ],
+        // required: [true, "category is required"],
+    }, ],
 
-    numViews: [
-      {
+    numViews: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-      },
-    ],
+    }, ],
 
-    numLikes: [
-      {
+    numLikes: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-      },
-    ],
+    }, ],
 
-    numDislikes: [
-      {
+    numDislikes: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-      },
-    ],
+    }, ],
 
-    user: [
-      {
+    user: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: [true, "Author is required"],
-      },
-    ],
+    }, ],
 
     photo: {
-      type: String,
-      required: [true, "photo is required"],
+        type: String,
+        // required: [true, "photo is required"],
     },
-  },
-  {
+}, {
     timestamps: true,
-  }
-);
+});
 
 //Create model
 const Post = mongoose.model("Post", postSchema);

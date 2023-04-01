@@ -1,13 +1,40 @@
+//Post model
+const Post = require("../../model/Post/Post");
+
+//User model
+const User = require("../../model/User/User");
 //Create post
-const createPost = async(req, res) => {
+const createPost = async(req, res, next) => {
+    const { title, description, user } = req.body;
     try {
-        //
+        //Check if logged in user exists
+        const userExists = await User.findById(req.userId);
+
+        if (!userExists) {
+            return res.status(404).json({
+                responseCode: "01",
+                responseMessage: "User not found",
+            });
+        }
+
+        //Create post
+        const post = await Post.create({
+            title,
+            description,
+            user: userExists._id,
+        });
+
+        //Add post to user's posts
+        userExists.posts.push(post._id);
+        await userExists.save();
+
         res.status(201).json({
             responseCode: "00",
             responseMessage: "Post created successfully",
         });
     } catch (err) {
         console.log(err);
+        next(new Error(err));
     }
 };
 
