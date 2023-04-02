@@ -64,6 +64,15 @@ const getAllCategories = async(req, res, next) => {
             });
         }
 
+        //If categories are empty
+        if (categories.length === 0) {
+            return res.status(200).json({
+                responseCode: "01",
+                responseMessage: "No categories found",
+                responseData: categories,
+            });
+        }
+
         res.status(200).json({
             responseCode: "00",
             responseMessage: "Categories fetched successfully",
@@ -103,8 +112,6 @@ const updateCategory = async(req, res, next) => {
     const { id } = req.params;
 
     try {
-        //Find by id or throw error
-
         //Find category
         const category = await Category.findById(id).orFail(() => {
             return appError("Category not found", 404);
@@ -132,14 +139,20 @@ const updateCategory = async(req, res, next) => {
 };
 //Delete category
 const deleteCategory = async(req, res, next) => {
+    const { id } = req.params;
+
     try {
-        //
+        //Find category
+        const category = await Category.findByIdAndDelete(id).orFail(() => {
+            return appError("Category not found", 404);
+        });
+
         res.status(200).json({
             responseCode: "00",
             responseMessage: "Category deleted successfully",
         });
     } catch (err) {
-        console.log(err);
+        next(appError(err, 500) || new Error(err));
     }
 };
 
