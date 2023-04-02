@@ -411,12 +411,6 @@ const blockUser = async(req, res, next) => {
                 loggedInUser.blockedUsers.push(userToBeBlocked._id);
                 await loggedInUser.save();
 
-                //If logged in user is admin, set isBlocked to true
-                if (loggedInUser.role === "admin") {
-                    userToBeBlocked.isBlocked = true;
-                    await userToBeBlocked.save();
-                }
-
                 res.status(200).json({
                     responseCode: "00",
                     responseMessage: "User blocked successfully",
@@ -428,12 +422,6 @@ const blockUser = async(req, res, next) => {
                 );
                 await loggedInUser.save();
 
-                //If logged in user is admin, set isBlocked to false
-                if (loggedInUser.role === "admin") {
-                    userToBeBlocked.isBlocked = false;
-                    await userToBeBlocked.save();
-                }
-
                 res.status(200).json({
                     responseCode: "00",
                     responseMessage: "User unblocked successfully",
@@ -442,6 +430,122 @@ const blockUser = async(req, res, next) => {
         }
     } catch (err) {
         appError(err.message, 500);
+    }
+};
+
+//Unblock user
+const unblockUser = async(req, res, next) => {
+    try {
+        const userToBeUnblocked = await User.findById(req.params.id);
+        if (!userToBeUnblocked) {
+            next(appError("User does not exist", 400));
+        }
+
+        //Get the user that is logged in
+        const loggedInUser = await User.findById(req.userId);
+
+        //check if the two users are the same
+        if (userToBeUnblocked._id.toString() === loggedInUser._id.toString()) {
+            //You cannot unblock yourself
+            return res.status(400).json({
+                responseCode: "01",
+                responseMessage: "You cannot unblock yourself",
+            });
+        } else {
+            //Check if logged in user has blocked the user before
+            const hasBlocked = loggedInUser.blockedUsers.find(
+                (user) => user.toString() === userToBeUnblocked._id.toString()
+            );
+
+            //If user has blocked the user before, remove the user from the blocked users
+            if (hasBlocked) {
+                //Remove user from blocked users
+                loggedInUser.blockedUsers = loggedInUser.blockedUsers.filter(
+                    (user) => user.toString() !== userToBeUnblocked._id.toString()
+                );
+                await loggedInUser.save();
+
+                res.status(200).json({
+                    responseCode: "00",
+                    responseMessage: "User unblocked successfully",
+                });
+            } else {
+                res.status(200).json({
+                    responseCode: "01",
+                    responseMessage: "User has not been blocked",
+                });
+            }
+        }
+    } catch (err) {
+        appError(err.message, 500);
+    }
+};
+
+//Admin block user
+const adminBlockUser = async(req, res, next) => {
+    try {
+        //Check if user to be blocked exists
+        const userToBeBlocked = await User.findById(req.params.id);
+        if (!userToBeBlocked) {
+            next(appError("User does not exist", 400));
+        }
+
+        //Get the user that is logged in
+        const loggedInUser = await User.findById(req.userId);
+
+        //check if the two users are the same
+        if (userToBeBlocked._id.toString() === loggedInUser._id.toString()) {
+            //You cannot block yourself
+            return res.status(400).json({
+                responseCode: "01",
+                responseMessage: "You cannot block yourself",
+            });
+        } else {
+            //Check if logged in user has blocked the user before before
+            //Set isBlocked to the opposite of what it is
+            userToBeBlocked.isBlocked = !userToBeBlocked.isBlocked;
+            await userToBeBlocked.save();
+        }
+    } catch (err) {
+        next(appError(err.message, 500));
+    }
+};
+
+//Admin unblock user
+const adminUnblockUser = async(req, res, next) => {
+    try {
+        const userToBeUnblocked = await User.findById(req.params.id);
+        if (!userToBeUnblocked) {
+            next(appError("User does not exist", 400));
+        }
+
+        //Get the user that is logged in
+        const loggedInUser = await User.findById(req.userId);
+
+        //check if the two users are the same
+        if (userToBeUnblocked._id.toString() === loggedInUser._id.toString()) {
+            //You cannot block yourself
+            return res.status(400).json({
+                responseCode: "01",
+                responseMessage: "You cannot unblock yourself",
+            });
+        }
+
+        //Check if user is blocked
+        if (userToBeUnblocked.isBlocked) {
+            //Set isBlocked to false
+            userToBeUnblocked.isBlocked = false;
+            await userToBeUnblocked.save();
+        } else {
+            next(appError("User is not blocked", 400));
+        }
+
+        res.status(200).json({
+            responseCode: "00",
+            responseMessage: "User unblocked successfully",
+        });
+    } catch (err) {
+        next(appError(err.message, 500));
     }
 };
 
@@ -535,4 +639,6 @@ module.exports = {
     blockUser,
     updatePassword,
     deleteUserAccount,
+    adminBlockUser,
+    adminUnblockUser,
 };

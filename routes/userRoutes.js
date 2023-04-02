@@ -55,6 +55,9 @@ userRouter.post("/unfollow/:id", isLoggedIn, unfollowUser);
 //Block user
 userRouter.post("/block/:id", isLoggedIn, blockUser);
 
+//Admin block user
+userRouter.post("/admin/block/:id", blockUser);
+
 //Update password
 userRouter.put("/profile/update/password", isLoggedIn, updatePassword);
 
