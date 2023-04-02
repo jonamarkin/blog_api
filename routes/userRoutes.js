@@ -2,17 +2,17 @@ const express = require("express");
 const upload = require("../config/cloudinary");
 //Import user controller
 const {
-  registerUser,
-  loginUser,
-  getAllUsers,
-  getSingleUser,
-  updateUser,
-  deleteUser,
-  avatarUpload,
-  profileViewedBy,
-  followUser,
-  unfollowUser,
-  blockUser,
+    registerUser,
+    loginUser,
+    getAllUsers,
+    getSingleUser,
+    updateUser,
+    deleteUser,
+    avatarUpload,
+    profileViewedBy,
+    followUser,
+    unfollowUser,
+    blockUser,
 } = require("../controllers/users/userController");
 const isLoggedIn = require("../middlewares/isLoggedIn");
 const userRouter = express.Router();
@@ -24,16 +24,19 @@ userRouter.post("/register", registerUser);
 userRouter.post("/login", loginUser);
 
 //Get all users endpoint
-userRouter.get("/", getAllUsers);
+userRouter.get("/all", getAllUsers);
 
 //Get single user endpoint
 userRouter.get("/profile", isLoggedIn, getSingleUser);
 
-//Update user endpoint
-userRouter.put("/:id", updateUser);
+//Update user profile endpoint
+userRouter.put("/profile/update", isLoggedIn, updateUser);
 
-//Delete user endpoint
-userRouter.delete("/:id", deleteUser);
+//Update random user endpoint
+userRouter.put("/update/:id", updateUser);
+
+//Delete random user endpoint
+userRouter.delete("/admin/delete/:id", deleteUser);
 
 //Avatar upload endpoint
 userRouter.post("/avatar", isLoggedIn, upload.single("avatar"), avatarUpload);
@@ -48,6 +51,6 @@ userRouter.post("/follow/:id", isLoggedIn, followUser);
 userRouter.post("/unfollow/:id", isLoggedIn, unfollowUser);
 
 //Block user
-userRouter.post("/block/:id", isLoggedIn, blockUser);
+userRouter.post("/admin/block/:id", isLoggedIn, blockUser);
 
 module.exports = userRouter;

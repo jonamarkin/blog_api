@@ -137,16 +137,30 @@ const updateUser = async(req, res, next) => {
             next(appError("Email is already in use", 400));
         }
 
-        //Update user
-        userExists.firstName = firstName;
-        userExists.lastName = lastName;
-        userExists.email = email;
-        await userExists.save();
+        // //Update user
+        // userExists.firstName = firstName;
+        // userExists.lastName = lastName;
+        // userExists.email = email;
+        // await userExists.save();
+
+        //Find by id and update
+        const updatedUser = await User.findByIdAndUpdate(
+            req.userId, {
+                $set: {
+                    firstName,
+                    lastName,
+                    email,
+                },
+            }, {
+                new: true,
+                runValidators: true,
+            }
+        );
 
         res.status(200).json({
             responseCode: "00",
             responseMessage: "User updated successfully",
-            responseData: userExists,
+            responseData: updatedUser,
         });
     } catch (err) {
         next(appError(err.message, 500) || new Error(err));
