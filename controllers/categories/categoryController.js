@@ -84,11 +84,26 @@ const getSingleCategory = async(req, res) => {
 };
 //Update category
 const updateCategory = async(req, res) => {
+    const { title } = req.body;
+    const { id } = req.params;
     try {
-        //
+        //Find category
+        const category = await Category.findById(id);
+        if (!category) {
+            return res.status(404).json({
+                responseCode: "01",
+                responseMessage: "Category not found",
+            });
+        }
+
+        //Update category
+        category.title = title;
+        await category.save();
+
         res.status(200).json({
             responseCode: "00",
             responseMessage: "Category updated successfully",
+            responseData: category,
         });
     } catch (err) {
         console.log(err);
