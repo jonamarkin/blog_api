@@ -102,17 +102,23 @@ userSchema.pre("findOne", async function(next) {
         return lastPostDate;
     });
 
-    userSchema.virtual("isActive").get(function() {
-        const today = new Date();
-        const diffTime = Math.abs(today - lastPost.createdAt);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        if (diffDays > 30) {
-            this._conditions.isBlocked = true;
-        } else {
-            this._conditions.isBlocked = false;
-        }
-        return diffDays <= 30;
-    });
+    const today = new Date();
+    const diffTime = Math.abs(today - lastPost.createdAt);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    //console.log("Diffdays" + diffDays);
+    if (diffDays <= 30) {
+        //Set isBlocked to false
+        await User.findByIdAndUpdate(userId, { isBlocked: false });
+        userSchema.virtual("isActive").get(function() {
+            return true;
+        });
+    } else {
+        await User.findByIdAndUpdate(userId, { isBlocked: true });
+        userSchema.virtual("isActive").get(function() {
+            return false;
+        });
+    }
 
     //Automatically block user if they have not created a post in the last 30 days
 
