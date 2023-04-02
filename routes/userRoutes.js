@@ -15,6 +15,9 @@ const {
     blockUser,
     updatePassword,
     deleteUserAccount,
+    adminBlockUser,
+    adminUnblockUser,
+    unblockUser,
 } = require("../controllers/users/userController");
 const isLoggedIn = require("../middlewares/isLoggedIn");
 const userRouter = express.Router();
@@ -55,8 +58,14 @@ userRouter.post("/unfollow/:id", isLoggedIn, unfollowUser);
 //Block user
 userRouter.post("/block/:id", isLoggedIn, blockUser);
 
+//Unblock user
+userRouter.post("/unblock/:id", isLoggedIn, unblockUser);
+
 //Admin block user
-userRouter.post("/admin/block/:id", blockUser);
+userRouter.post("/admin/block/:id", adminBlockUser);
+
+//Admin unblock user
+userRouter.post("/admin/unblock/:id", adminUnblockUser);
 
 //Update password
 userRouter.put("/profile/update/password", isLoggedIn, updatePassword);

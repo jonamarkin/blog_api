@@ -641,4 +641,5 @@ module.exports = {
     deleteUserAccount,
     adminBlockUser,
     adminUnblockUser,
+    unblockUser,
 };
