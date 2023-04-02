@@ -8,6 +8,7 @@ const {
     deleteCategory,
 } = require("../controllers/categories/categoryController");
 const isLoggedIn = require("../middlewares/isLoggedIn");
+const checkRequestErrors = require("../middlewares/checkRequestErrors");
 
 const categoryRouter = express.Router();
 

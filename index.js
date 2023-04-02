@@ -8,11 +8,12 @@ const commentRouter = require("./routes/commentRoutes");
 const categoryRouter = require("./routes/categoryRoutes");
 const globalErrorHandler = require("./middlewares/globalErrorHandler");
 const isAdmin = require("./middlewares/isAdmin");
+//const checkRequestErrors = require("./middlewares/checkRequestErrors");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+    console.log(`Server is running on port ${PORT}`);
 });
 
 app.use(express.json());
@@ -33,8 +34,8 @@ app.use(globalErrorHandler);
 
 //404 error
 app.use("*", (req, res) => {
-  res.status(404).json({
-    responseCode: "99",
-    responseMessage: `${req.originalUrl} not found`,
-  });
+    res.status(404).json({
+        responseCode: "99",
+        responseMessage: `${req.originalUrl} not found`,
+    });
 });
