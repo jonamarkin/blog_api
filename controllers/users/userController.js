@@ -69,6 +69,10 @@ const loginUser = async(req, res) => {
                 token: generateToken(userExists._id),
             },
         });
+
+        //Set last login date
+        userExists.lastLogin = Date.now();
+        await userExists.save();
     } catch (err) {
         //console.log(err.statusCode);
         console.log(new Error(err));
