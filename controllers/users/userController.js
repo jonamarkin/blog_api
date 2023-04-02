@@ -534,4 +534,5 @@ module.exports = {
     unfollowUser,
     blockUser,
     updatePassword,
+    deleteUserAccount,
 };

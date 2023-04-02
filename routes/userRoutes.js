@@ -14,6 +14,7 @@ const {
     unfollowUser,
     blockUser,
     updatePassword,
+    deleteUserAccount,
 } = require("../controllers/users/userController");
 const isLoggedIn = require("../middlewares/isLoggedIn");
 const userRouter = express.Router();
@@ -56,5 +57,8 @@ userRouter.post("/block/:id", isLoggedIn, blockUser);
 
 //Update password
 userRouter.put("/profile/update/password", isLoggedIn, updatePassword);
+
+//Delete user account
+userRouter.delete("/profile/delete", isLoggedIn, deleteUserAccount);
 
 module.exports = userRouter;
