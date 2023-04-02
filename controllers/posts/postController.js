@@ -17,6 +17,14 @@ const createPost = async(req, res, next) => {
             });
         }
 
+        //Check if user is blocked
+        if (userExists.isBlocked) {
+            return res.status(403).json({
+                responseCode: "01",
+                responseMessage: "User is blocked",
+            });
+        }
+
         //Create post
         const post = await Post.create({
             title,
