@@ -13,6 +13,7 @@ const {
     followUser,
     unfollowUser,
     blockUser,
+    updatePassword,
 } = require("../controllers/users/userController");
 const isLoggedIn = require("../middlewares/isLoggedIn");
 const userRouter = express.Router();
@@ -51,6 +52,9 @@ userRouter.post("/follow/:id", isLoggedIn, followUser);
 userRouter.post("/unfollow/:id", isLoggedIn, unfollowUser);
 
 //Block user
-userRouter.post("/admin/block/:id", isLoggedIn, blockUser);
+userRouter.post("/block/:id", isLoggedIn, blockUser);
+
+//Update password
+userRouter.put("/profile/update/password", isLoggedIn, updatePassword);
 
 module.exports = userRouter;

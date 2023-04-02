@@ -6,6 +6,7 @@ const getTokenFromHeader = require("../../utils/getTokenFromHeader");
 const jwt = require("jsonwebtoken");
 const appError = require("../../utils/appError");
 const upload = require("../../config/cloudinary");
+const Comment = require("../../model/Comment/Comment");
 
 //Register a new user
 const registerUser = async(req, res, next) => {
@@ -444,7 +445,80 @@ const blockUser = async(req, res, next) => {
     }
 };
 
-//Admin block user
+//Update password
+const updatePassword = async(req, res, next) => {
+    const { oldPassword, newPassword } = req.body;
+    try {
+        //Check if user exists
+        const userExists = await User.findById(req.userId);
+        if (!userExists) {
+            next(appError("User does not exist", 400));
+        }
+
+        //Check if old password is correct
+        const isPasswordCorrect = await bcrypt.compare(
+            oldPassword,
+            userExists.password
+        );
+        if (!isPasswordCorrect) {
+            next(appError("Old password is incorrect", 400));
+        }
+
+        //Hash new password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+        //Update password
+        userExists.password = hashedPassword;
+        await userExists.save();
+
+        res.status(200).json({
+            responseCode: "00",
+            responseMessage: "Password updated successfully",
+        });
+    } catch (error) {
+        next(appError(error.message, 500) || new Error(error));
+    }
+};
+
+//Allow user to delete their account
+const deleteUserAccount = async(req, res, next) => {
+    try {
+        //Check if user exists
+        const userExists = await User.findById(req.userId);
+        if (!userExists) {
+            next(appError("User does not exist", 400));
+        }
+
+        //Delete all related posts
+        await Post.deleteMany({ user: req.userId });
+
+        //Delete all related comments
+        await Comment.deleteMany({ user: req.userId });
+
+        //Delete all related likes
+        await Like.deleteMany({ user: req.userId });
+
+        //Delete from other users' followers
+        await User.updateMany({ followers: { $in: [req.userId] } }, { $pull: { followers: req.userId } });
+
+        //Delete from other users' following
+        await User.updateMany({ following: { $in: [req.userId] } }, { $pull: { following: req.userId } });
+
+        //Delete from other users' blocked users
+        await User.updateMany({ blockedUsers: { $in: [req.userId] } }, { $pull: { blockedUsers: req.userId } });
+
+        //Delete user
+        await userExists.remove();
+
+        res.status(200).json({
+            responseCode: "00",
+            responseMessage: "User deleted successfully",
+        });
+    } catch (err) {
+        next(appError(err.message, 500) || new Error(err));
+    }
+};
 
 //Exporting the registerUser function
 module.exports = {
@@ -459,4 +533,5 @@ module.exports = {
     followUser,
     unfollowUser,
     blockUser,
+    updatePassword,
 };
