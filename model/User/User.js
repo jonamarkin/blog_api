@@ -124,7 +124,20 @@ userSchema.pre("findOne", async function(next) {
         });
     }
 
-    //Automatically block user if they have not created a post in the last 30 days
+    //Update badge based on number of posts
+    if (posts.length >= 1 && posts.length <= 10) {
+        //Set badge to newbie
+        await User.findByIdAndUpdate(userId, { userBadge: "newbie" });
+    } else if (posts.length >= 11 && posts.length <= 20) {
+        //Set badge to expert
+        await User.findByIdAndUpdate(userId, { userBadge: "expert" });
+    } else if (posts.length >= 21 && posts.length <= 30) {
+        //Set badge to master
+        await User.findByIdAndUpdate(userId, { userBadge: "master" });
+    } else if (posts.length >= 31) {
+        //Set badge to legend
+        await this.findByIdAndUpdate(userId, { userBadge: "legend" });
+    }
 
     next();
 });
