@@ -76,6 +76,10 @@ const userSchema = new mongoose.Schema({
         enum: ["newbie", "expert", "master", "legend"],
         default: "newbie",
     },
+    //Last login date
+    lastLogin: {
+        type: Date,
+    },
 }, {
     timestamps: true,
     toJSON: { virtuals: true },
