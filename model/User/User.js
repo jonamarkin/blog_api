@@ -182,6 +182,30 @@ userSchema.virtual("isActive").get(function() {
     return diffDays <= 30;
 });
 
+//Last active date - use the lastLogin date if user has logged in within the last 30 days
+//Otherwise use the last post date
+//Return number of days since last active
+userSchema.virtual("lastActiveDay").get(function() {
+    const lastLogin = this.lastLogin;
+    const today = new Date();
+    const diffTime = Math.abs(today - lastLogin);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    //If diffDays is equal to 1, return "yesterday"
+    if (diffDays === 1) {
+        return "Yesterday";
+    }
+
+    //If diffDays is zero, return "today"
+    if (diffDays === 0) {
+        return "Today";
+    }
+
+    //if diffDays is greater than 1, return "x days ago"
+
+    return diffDays + " days ago";
+});
+
 //Create model
 const User = mongoose.model("User", userSchema);
 
