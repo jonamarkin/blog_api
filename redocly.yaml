@@ -18,6 +18,7 @@ rules:
     assertions:
       defined: true
       minLength: 30
+      
 
 theme:
   openapi:
@@ -26,3 +27,6 @@ theme:
         - lang: curl
         - lang: Node.js
         - lang: Python
+        - lang: Java
+        - lang: Ruby
+
