@@ -31,6 +31,7 @@ const createPost = async(req, res, next) => {
         res.status(201).json({
             responseCode: "00",
             responseMessage: "Post created successfully",
+            responseData: post,
         });
     } catch (err) {
         console.log(err);
@@ -45,6 +46,7 @@ const getAllPosts = async(req, res) => {
         res.status(200).json({
             responseCode: "00",
             responseMessage: "Posts fetched successfully",
+            //responseData: post,
         });
     } catch (err) {
         console.log(err);
