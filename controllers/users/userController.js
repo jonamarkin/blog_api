@@ -41,7 +41,7 @@ const registerUser = async(req, res, next) => {
 };
 
 //Login a user
-const loginUser = async(req, res) => {
+const loginUser = async(req, res, next) => {
     const { email, password } = req.body;
     try {
         //Check if email exists
@@ -80,7 +80,7 @@ const loginUser = async(req, res) => {
 };
 
 //Get all users
-const getAllUsers = async(req, res) => {
+const getAllUsers = async(req, res, next) => {
     try {
         //Get all users
         const users = await User.find();
@@ -99,10 +99,10 @@ const getAllUsers = async(req, res) => {
 };
 
 //Get single user
-const getSingleUser = async(req, res) => {
+const getSingleUser = async(req, res, next) => {
     const loggedInUser = req.userId;
     try {
-        const user = await User.findById(loggedInUser);
+        const user = await User.findById(loggedInUser).populate("posts");
         if (!user) {
             next(appError("User does not exist", 400));
         }
@@ -117,14 +117,39 @@ const getSingleUser = async(req, res) => {
 };
 
 //Update user
-const updateUser = async(req, res) => {
+const updateUser = async(req, res, next) => {
+    const { firstName, lastName, email } = req.body;
     try {
+        //Check if logged in user exists
+        const userExists = await User.findById(req.userId);
+        if (!userExists) {
+            next(appError("User does not exist", 400));
+        }
+
+        //Check if user is blocked
+        if (userExists.isBlocked) {
+            next(appError("User is blocked", 400));
+        }
+
+        //check if email is already in use
+        const emailTaken = await User.findOne({ email });
+        if (emailTaken) {
+            next(appError("Email is already in use", 400));
+        }
+
+        //Update user
+        userExists.firstName = firstName;
+        userExists.lastName = lastName;
+        userExists.email = email;
+        await userExists.save();
+
         res.status(200).json({
             responseCode: "00",
             responseMessage: "User updated successfully",
+            responseData: userExists,
         });
     } catch (err) {
-        console.log(err);
+        next(appError(err.message, 500) || new Error(err));
     }
 };
 
